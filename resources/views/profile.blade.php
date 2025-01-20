@@ -54,12 +54,9 @@
             </form>
         </div>
     @endsection
-    dashboard.blade.php:
 
-    php
-    Copy code
     <!-- resources/views/dashboard.blade.php -->
-    @extends('layouts.app')
+    @extends('dashboard.app')
 
     @section('content')
         <div class="container">

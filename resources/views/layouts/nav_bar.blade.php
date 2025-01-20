@@ -1,54 +1,56 @@
-<nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="{{ route('index') }}">
+            <img src="{{ asset('assets/image/logo1.png') }}" alt="Yfasma" class="navbar-logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="nav-link active" aria-current="page" href="{{ route('index') }}">
-            <img src="{{ asset('assets/image/logo1.png') }}" alt="Yfasma"
-                style="height: 40px; padding-top: 0; margin-top: 0;">
-        </a>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" href="{{ route('index') }}" style="padding-bottom:0">Home</a>
+                    <a class="nav-link" href="{{ route('index') }}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="{{ route('designer') }}" style="padding-bottom:0">Designer</a>
+                    <a class="nav-link" href="{{ route('designer') }}">Product</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{ route('aboutus') }}" style="padding-bottom:0">About</a>
-                </li>
-                @if (Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'designer'))
-                    <li class="nav-item">
-                        {{-- <a class="nav-link active" href="{{ route('uploads.create') }}" >Upload</a> --}}
-                        <a class="nav-link active" href="{{ route('add_image') }}">Upload</a>
-                    </li>
-                @endif
-                <!-- Other menu items -->
+
             </ul>
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="{{ route('search') }}" method="GET">
-                <div id="the-basics">
-                    <div class="input-group">
-                        <input name="searchField" id="searchField" type="search"
-                            class="form-control form-control-dark" style="width: 426px;">
-                        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
-                    </div>
+            <form class="d-flex me-3" action="{{ route('search') }}" method="GET">
+                <div class="input-group">
+                   <input name="searchField" id="searchField" type="search" class="form-control" placeholder="Search Products">
+                   <button class="btn btn-outline-secondary" type="submit">Search</button>
                 </div>
             </form>
-            <a href="{{ route('cart') }}" class="me-2">
-                <img src="{{ asset('assets/image/cart.png') }}" alt="Cart"
-                    style="height: 25px; padding-top: 0; margin-top: 0;">
-            </a>
+                <a href="{{ route('cart') }}" class="me-2 nav-icon">
+                    <img src="{{ asset('assets/image/cart.png') }}" alt="Cart" style="height: 25px">
+                </a>
             @guest
-                <button class="signin" type="button">
-                    <a href="{{ route('login.form') }}" style="text-decoration: none; color: white;">Login</a>
-                </button>
+                 <button class="btn btn-primary ms-2"><a href="{{ route('login.form') }}" style="text-decoration: none; color: white;">Login</a></button>
             @else
-                <button class="signin" type="button">
-                    <a href="{{ route('logout') }}" style="text-decoration: none; color: white;">Logout</a>
-                </button>
+            {{-- <div class="user_icons">
+                <span>{{ Auth::user()->name }}</span>
+                <a href="{{ route('admin.profile') }}">
+                    <img src="{{ asset('assets/image/user.png') }}" alt="User" style="height: 35px; cursor:pointer">
+                  </a>
+            </div> --}}
+            <div class="user_icons">
+                <span>{{ Auth::user()->name }}</span>
+
+                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'designer')
+                    <!-- Link for admin and designer -->
+                    <a href="{{ route('admin.profile') }}">
+                        <img src="{{ asset('assets/image/user.png') }}" alt="User" style="height: 35px; cursor:pointer">
+                    </a>
+                @else
+                    <!-- Disabled for user role -->
+                    <img src="{{ asset('assets/image/user.png') }}" alt="User" style="height: 35px; cursor:not-allowed; opacity: 0.5">
+                @endif
+            </div>
             @endguest
+            @if (Auth::check() && Auth::user()->role == 'user')
+    <a href="{{ route('logout') }}" style="color: black">Logout</a>
+@endif
         </div>
     </div>
 </nav>

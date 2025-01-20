@@ -16,7 +16,7 @@ class UserDetailController extends Controller
     {
         // Fetch all user details from the users table
         $userDetails = User::select('id', 'name', 'email', 'phone')->get();
-        return view('admin.adminprofile', ['userDetails' => $userDetails]);
+        return view('dashboard.home', ['userDetails' => $userDetails]);
     }
 
     /**

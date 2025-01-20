@@ -9,12 +9,14 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->bigInteger('user_id')->constrained()->onDelete('cascade');
             $table->decimal('total_amount', 10, 2);
             $table->string('status')->default('pending');
+            $table->json('cart_ids');
+            $table->string('order_id')->unique();
+            $table->string('payment_type');
+            $table->string('payment_status');
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

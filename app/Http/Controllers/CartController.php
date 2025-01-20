@@ -6,14 +6,35 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Cart;
+use App\Models\Order;
 use App\Models\Upload;
+use Log;
 
 class CartController extends Controller
 {
+    public function calculatesignature(Request $request)
+    {
+        $amount = $request->amount;
+        $uuid = now()->timestamp;
+        $message = "total_amount={$amount},transaction_uuid={$uuid},product_code=EPAYTEST";
+        $secret = "8gBm/:&EnhH.1/q";
+        $s = hash_hmac("sha256", $message, $secret, true);
+
+        $signature = base64_encode($s);
+        $data = [
+            'amount' => $amount,
+            'signature' => $signature,
+            'transaction_uuid' => $uuid,
+            'product_code' => 'EPAYTEST',
+        ];
+        Log::info($data);
+        return response()->json($data);
+    }
+
     public function index()
     {
         // $cartItems = Auth::user()->cartItems;
-        $cartItems = Cart::with('user', 'product')->where(['user_id' => user()->id])->get();
+        $cartItems = Cart::with('user', 'product')->where(['status'=>'pending'])->where(['user_id' => Auth::user()->id])->get();
         // dd($cartItems);
         return view('cart', compact('cartItems'));
     }
@@ -24,6 +45,21 @@ class CartController extends Controller
         $cart = Cart::where('id', decrypt($cart_id))->first();
 
         return view('edit_cart', compact('cart'));
+    }
+    public function checkout()
+    {
+        $product = Cart::with('user', 'product')->where('status','pending')->where(['user_id' => user()->id])->get();
+        $orderID = 'ORD-' . strtoupper(uniqid());
+        $totalPrice = $product->sum(function ($cartItem) {
+            return $cartItem->product->price * $cartItem->quantity;
+        });
+        $message = "total_amount={$totalPrice},transaction_uuid={$orderID},product_code=EPAYTEST";
+        // Use your actual secret key here
+        $secret = "8gBm/:&EnhH.1/q";
+        $s = hash_hmac("sha256", $message, $secret, true);
+
+        $signature = base64_encode($s);
+        return view('payment.index', compact('product','totalPrice','orderID','signature'));
     }
 
     public function updateCart(Request $request, $cart_id)
@@ -40,6 +76,84 @@ class CartController extends Controller
 
         return redirect()->route('cart')->with('success', 'Cart updated successfully!');
     }
+    public function verifyEsewa(Request $request){
+        $data = $request->all();
+        $payment_status = 'Unpaid';
+        $payment_method = "eSewa";
+        $decodedData = json_decode(base64_decode($data['data']), true);
+        Log::info($decodedData);
+        $transaction_code = $decodedData['transaction_code'];
+        $status = $decodedData['status'];
+        $total_amount = $decodedData['total_amount'];
+        $transaction_uuid = $decodedData['transaction_uuid']; // change name
+        $order_id = $decodedData['transaction_uuid']; // change name
+        $product_code = $decodedData['product_code'];
+        $signed_field_names = $decodedData['signed_field_names'];
+        $signature = $decodedData['signature'];
+        $cart_ids = Cart::where('user_id', user()->id)->where('status','pending')->pluck('id');
+
+
+
+        $user_id = Auth::id();
+
+        $payment_id = "";
+        $payload = [
+            'transaction_code' => $transaction_code,
+            'total_amount' => $total_amount,
+            'transaction_uuid' => $transaction_uuid,
+            'product_code' => $product_code,
+        ];
+        $data = [
+                    'user_id' => $user_id,
+                    'total_amount' => floatval(str_replace(',', '', $total_amount)),
+                    'status' => 'pending',
+                    'cart_ids' => $cart_ids,
+                    'order_id' => $order_id,
+                    'payment_type' => $payment_method,
+                    'payment_status' => $payment_status,
+                ];
+        Order::create($data);
+        return $response = $this->verifyEsewaPayment($payload,$cart_ids,$order_id);
+
+    }
+    public function verifyEsewaPayment($payload,$cart_ids,$order_id){
+        $curl = curl_init();
+        $data = [
+            'product_code' =>  $payload['product_code'],
+            'transaction_code' => $payload['transaction_code'],
+            'total_amount' => $payload['total_amount'],
+            'transaction_uuid' => $payload['transaction_uuid'],
+        ];
+        Log::info($data);
+        $url = 'https://uat.esewa.com.np/api/epay/transaction/status/?' . http_build_query($data);
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $res = json_decode($response);
+
+        if($res->status == "COMPLETE"){
+            $find_invoice = Order::where("user_id",Auth::id())->where("order_id",$order_id)->first();
+            if($find_invoice){
+                $find_invoice->update([
+                    "payment_status"=>"Paid",
+                ]);
+                Cart::whereIn('id', $cart_ids)->update(['status' => 'done']);
+            }
+            return view('payment_success');
+        }else{
+            return view('payment_failed');
+        }
+    }
 
     public function deleteCart($cart_id)
     {
@@ -48,24 +162,36 @@ class CartController extends Controller
     }
 
 
-
-
     public function verifyPayment()
     {
         // $uploads = Upload::all();
         // return view('index',compact('uploads'))->with('success', 'Your order has been placed via E-sewa');
         return redirect()->route('index')->with('success', 'Your order has been placed via E-sewa');
     }
+    public function placeOrder(Request $request)
+    {
+        try {
+            $orderID = $request->orderID;
+            $totalPrice = $request->totalPrice;
+            $cart_ids = Cart::where('user_id', user()->id)->where('status','pending')->pluck('id');
 
+            $data = [
+            'user_id' => user()->id,
+            'total_amount' => $totalPrice,
+            'status' => 'pending',
+            'cart_ids' => $cart_ids,
+            'order_id' => $orderID,
+            'payment_type' => 'Cash on delivery',
+            'payment_status' => 'pending',
+            ];
+            Order::create($data);
+            Cart::whereIn('id', $cart_ids)->update(['status' => 'done']);
 
-
-
-
-
-
-
-
-
+            return redirect()->route('cart')->with('success', 'Order placed successfully!');
+        } catch (\Exception $e) {
+            return redirect()->route('cart')->with('error', 'Failed to place order: ' . $e->getMessage());
+        }
+    }
 
 
 
@@ -114,12 +240,6 @@ class CartController extends Controller
         return redirect()->route('cart')->with('error', 'Cart item not found!');
     }
 
-    public function checkout(Request $request)
-    {
-        // Implement your eSewa payment processing logic here
 
-        // Example placeholder logic for order processing
-        // Redirect to eSewa with necessary parameters
-        return redirect('https://uat.esewa.com.np/epay/main')->with('success', 'Proceeding to checkout');
-    }
+
 }

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class AuthManager extends Controller
+class AuthController extends Controller
 {
     /**
      * Show the registration form.

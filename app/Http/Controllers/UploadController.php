@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Upload;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class UploadController extends Controller
@@ -11,8 +12,9 @@ class UploadController extends Controller
     public function index()
     {
         $uploads = Upload::all();
+        $products = Product::all();
         // dd($uploads);
-        return view('index', compact('uploads'));
+        return view('index', compact('products'));
     }
 
     public function addImage(){
@@ -48,9 +50,10 @@ class UploadController extends Controller
 
     public function viewProduct($product_id){
 
-        $product = Upload::find(decrypt($product_id));
+        $product = Product::find(decrypt($product_id));
+        $relatedProducts = Product::where('category', $product->category)->take(6)->get();
 
-        return view('productdetail',compact('product'));
+        return view('productdetail',compact('product', 'relatedProducts'));
     }
 
     public function storeCart(Request $request){

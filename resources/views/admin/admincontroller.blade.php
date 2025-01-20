@@ -12,7 +12,7 @@
                         <thead class="thead-dark">
                             <tr>
                                 {{-- <th scope="col">ID</th> --}}
-                                <th scope="col">Designer Name</th>
+                                <th scope="col">Product Name</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Price</th>

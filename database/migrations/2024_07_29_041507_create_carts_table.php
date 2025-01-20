@@ -13,15 +13,12 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id'); // Foreign key for users
-            $table->unsignedBigInteger('product_id'); // Foreign key for products
+            $table->bigInteger('user_id')->constrained()->onDelete('cascade');
+            $table->bigInteger('product_id')->constrained()->onDelete('cascade');
             $table->integer('quantity'); // Quantity of the product
             $table->string('size'); // Size of the product
+            $table->string('status')->default("pending"); // Size of the product
             $table->timestamps();
-
-            // Foreign key constraints
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('upload')->onDelete('cascade');
         });
     }
 

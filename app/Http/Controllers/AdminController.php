@@ -13,7 +13,7 @@ class AdminController extends Controller
         $uploads = Upload::all();
 
         // Pass the data to the view
-        return view('admincontroller', ['uploads' => $uploads]);
+        return view('admin.admincontroller', ['uploads' => $uploads]);
     }
 
     public function adminController()

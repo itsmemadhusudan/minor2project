@@ -13,8 +13,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Example: Update users by their emails or other identifiers to assign roles
-        DB::table('users')->where('email', 'admin@example.com')->update(['role' => 'admin']);
-        DB::table('users')->where('email', 'designer@example.com')->update(['role' => 'designer']);
+        // DB::table('users')->where('email', 'admin@example.com')->update(['role' => 'admin']);
+        // DB::table('users')->where('email', 'designer@example.com')->update(['role' => 'designer']);
         // Add more users as needed
+        $this->call([
+            ProductSeeder::class
+       ]);
     }
 }

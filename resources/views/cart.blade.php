@@ -1,7 +1,12 @@
 @extends('master')
 
 @section('content')
-<div class="row">
+<div class="row my-4">
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="wishlist-table col-md-8">
         <div class="responsive-table">
             <table class="table border text-center">
@@ -21,8 +26,9 @@
                         $cart_ids = [];
                     @endphp
                     @foreach ($cartItems as $item)
+                    @isset($item->product)
                         <tr>
-                            <td>{{ $item->product->designer_name }} </td>
+                            <td>{{ $item->product->name }} </td>
                             <td>{{ $item->size }} </td>
                             <td>{{ $item->product->price }} </td>
                             <td>{{ $item->quantity }} </td>
@@ -35,11 +41,13 @@
                                     <button style="padding: 5px 10px; color: white; background-color: #dc3545; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Delete</button>
                                 </a>
                             </td>
+                            
                         </tr>
                         @php
                             $total_amount += $item->product->price * $item->quantity;
                             array_push($cart_ids, $item->id);
                         @endphp
+                        @endisset
                     @endforeach
                 </tbody>
             </table>
@@ -49,7 +57,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="share-wishlist shoping-con">
-                    <a href="{{ url('/') }}" class="btn small"><i class="fa fa-angle-left"></i> Continue Shopping</a>
+                    <a href="{{ url('/') }}" class="link"><i class="fa fa-angle-left"></i> Continue Shopping</a>
                 </div>
             </div>
         </div>
@@ -93,19 +101,9 @@
                 </table>
             </div>
             <div class="share-wishlist">
-                <form action="https://uat.esewa.com.np/epay/main" method="POST">
-                    @csrf
-                    <input type="hidden" name="tAmt" value="{{ $total_amount - $total_amount * 0.1 }}" required>
-                    <input type="hidden" name="amt" value="{{ $total_amount - $total_amount * 0.1 }}" required>
-                    <input type="hidden" name="txAmt" value="0" required>
-                    <input type="hidden" name="psc" value="0" required>
-                    <input type="hidden" name="pdc" value="0" required>
-                    <input type="hidden" name="scd" value="EPAYTEST" required>
-                    <input type="hidden" name="pid" value="{{ \Str::uuid() }}" required>
-                    <input type="hidden" name="su" value="{{ url('payment-verify?oid=' . json_encode($cart_ids)) }}" required>
-                    <input type="hidden" name="fu" value="{{ url('payment-fail') }}" required>
-                    <button type="submit" class="btn btn-success small">Checkout via E-sewa</button>
-                </form>
+                @if(count($cartItems) > 0)
+                <a href="{{ route('cart.checkout') }}" class="btn btn-success small">Proceed to Payment</a>
+                @endif
             </div>
         </div>
     </div>
