@@ -9,10 +9,7 @@ class AdminController extends Controller
 {
     public function index()
     {
-        // Fetch all data from the upload table
         $uploads = Upload::all();
-
-        // Pass the data to the view
         return view('admin.admincontroller', ['uploads' => $uploads]);
     }
 
@@ -21,15 +18,11 @@ class AdminController extends Controller
         $uploads = Upload::all();
         return view('admin.admincontroller', compact('uploads'));
     }
-
-    // Show the form for editing the specified upload
     public function edit($id)
     {
         $upload = Upload::findOrFail($id);
         return view('admin.edit', compact('upload'));
     }
-
-    // Update the specified upload in storage
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -59,9 +52,7 @@ class AdminController extends Controller
 
         return redirect()->route('admin.admincontroller')->with('success', 'Upload updated successfully.');
     }
-
-    // Remove the specified upload from storage
-    public function destroy($id)
+      public function destroy($id)
     {
         $upload = Upload::findOrFail($id);
         $upload->delete();

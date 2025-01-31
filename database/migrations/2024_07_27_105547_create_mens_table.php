@@ -6,26 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('mens', function (Blueprint $table) {
             $table->id();
-            $table->string('image'); // Assuming you will store the image path
+            $table->string('image');
             $table->string('designer_name');
             $table->string('email');
             $table->string('address');
             $table->text('description');
-            $table->decimal('price', 8, 2); // Adjust precision and scale as needed
+            $table->decimal('price', 8, 2); 
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('mens');

@@ -41,7 +41,7 @@
                                     <button style="padding: 5px 10px; color: white; background-color: #dc3545; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Delete</button>
                                 </a>
                             </td>
-                            
+
                         </tr>
                         @php
                             $total_amount += $item->product->price * $item->quantity;
@@ -81,10 +81,10 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Discount Amount (10%)</td>
+                            <td>Discount Amount</td>
                             <td>
                                 <div class="price-box">
-                                    <span class="price"> {{ $total_amount * 0.1 }}</span>
+                                    <span class="price"> 0</span>
                                 </div>
                             </td>
                         </tr>
@@ -93,7 +93,7 @@
                             <td>
                                 <div class="price-box">
                                     <span class="price"> <span class="price">
-                                        <b>{{ $total_amount - $total_amount * 0.1 }}</b></span></span>
+                                        <b>{{ $total_amount }}</b></span></span>
                                 </div>
                             </td>
                         </tr>

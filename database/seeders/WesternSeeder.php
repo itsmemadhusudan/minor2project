@@ -13,13 +13,11 @@ class WesternSeeder extends Seeder
      */
     public function run()
     {
-        // Fetch all records from the upload table
         $uploads = DB::table('upload')->get();
 
         foreach ($uploads as $upload) {
-            // Insert records into the western table
             DB::table('western')->updateOrInsert(
-                ['upload_id' => $upload->id], // Use upload_id as a unique key
+                ['upload_id' => $upload->id],
                 [
                     'designer_name' => $upload->designer_name,
                     'email' => $upload->email,
@@ -28,7 +26,7 @@ class WesternSeeder extends Seeder
                     'price' => $upload->price,
                     'category' => $upload->category,
                     'profile_picture' => $upload->profile_picture,
-                    'upload_id' => $upload->id, // Store the upload ID
+                    'upload_id' => $upload->id,
                 ]
             );
         }

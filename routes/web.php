@@ -12,14 +12,11 @@ use App\Http\Controllers\UserDetailController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\DesignerAdminController;
-use App\Http\Controllers\OtherController; // Add this
-use App\Http\Controllers\ProductController; // Add this
-use App\Http\Controllers\CustomerController; // Add this
-use App\Http\Controllers\AdminOrderController; // Add this
-// Home Route
+use App\Http\Controllers\OtherController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\AdminOrderController;
 Route::get('/', [UploadController::class, 'index'])->name('index');
-
-// Upload Routes
 Route::prefix('upload')->group(function () {
     Route::get('/', [UploadController::class, 'index'])->name('upload-data');
     Route::get('/add', [UploadController::class, 'addImage'])->name('add_image');
@@ -27,18 +24,12 @@ Route::prefix('upload')->group(function () {
     Route::get('/product/{product_id}', [UploadController::class, 'viewProduct'])->name('view_product');
     Route::post('/product/store-cart', [UploadController::class, 'storeCart'])->name('store_cart');
 });
-
-// Designer Routes
 Route::prefix('product')->group(function () {
     Route::get('/', [DesignerController::class, 'showDesignerPage'])->name('designer');
     Route::get('/cultural-product', [DesignerController::class, 'culturalProduct'])->name('cultural');
     Route::get('/western-product', [DesignerController::class, 'westernProduct'])->name('western');
 });
-
-// About Us Route
 Route::get('/aboutus', [DesignerController::class, 'aboutUs'])->name('aboutus');
-
-// Authentication Routes
 Route::prefix('auth')->group(function () {
     Route::get('/registration', [AuthController::class, 'showRegistrationForm'])->name('registration.form');
     Route::post('/registration', [AuthController::class, 'register'])->name('register');
@@ -46,11 +37,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });
-
-// Search Route
 Route::get('/search', [SearchController::class, 'search'])->name('search');
-
-// Product Detail Route
 Route::prefix('productdetail')->group(function(){
     Route::post('/submit_form', [ProductDetailController::class, 'submitForm'])->name('submit_form');
     Route::get('/{id}', [ProductDetailController::class, 'show'])->name('productdetail');
@@ -61,9 +48,8 @@ Route::get('/cultural', [OtherController::class,'culturalPage'])->name('cultural
 Route::get('/western', [OtherController::class, 'westernPage'])->name('western');
 
 
-// Protected Routes (requires authentication)
+// Protected Routes
 Route::middleware(['auth'])->group(function () {
-    // Profile Routes
     Route::prefix('profile')->group(function () {
         Route::get('/', [DesignerController::class, 'profile'])->name('profile');
         Route::post('/', [DesignerController::class, 'updateProfile'])->name('profile.update');
@@ -97,7 +83,7 @@ Route::prefix('esewa')->group(function () {
 
 });
 // Admin Routes
-Route::prefix('admin')->group(function(){
+Route::prefix('admin')->group(callback: function(){
    Route::get('/profile', [UserDetailController::class, 'adminProfile'])->name('admin.profile');
    Route::get('/profile/edit/{id}', [UserDetailController::class, 'edit'])->name('admin.edit');
     Route::post('/profile/update/{id}', [UserDetailController::class, 'update'])->name('admin.update');
@@ -117,7 +103,7 @@ Route::prefix('order')->group(function(){
 });
 
 
-// new changes 
+// updated routes for payment,designer,product//updated routes
 Route::prefix('admin/designers')->group(function () {
     Route::get('/', [DesignerAdminController::class, 'index'])->name('admin.users.index');
     Route::get('/create', [DesignerAdminController::class, 'create'])->name('admin.users.create');

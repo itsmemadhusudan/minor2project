@@ -32,7 +32,7 @@
               <div class="d-flex align-items-center">
                   <i class="fas fa-user-plus fa-2x me-3 text-success"></i>
                   <div>
-                      {{-- <h5 class="card-title mb-0">New Customers</h5> --}}
+                      <h5 class="card-title mb-0">Total Customers</h5>
                       @if (Auth::check() && Auth::user()->role == 'admin')
                          <h5 class="card-title mb-0">New Customers</h5>
                       @endif

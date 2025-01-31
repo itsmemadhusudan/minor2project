@@ -14,10 +14,7 @@ class WesternTableSeeder extends Seeder
      */
     public function run()
     {
-        // Fetch all data from the upload table
         $uploads = DB::table('upload')->get();
-
-        // Insert data into the western table
         foreach ($uploads as $upload) {
             DB::table('westerns')->insert([
                 'designer_name' => $upload->designer_name,

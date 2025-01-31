@@ -7,9 +7,6 @@ use Illuminate\Database\Seeder;
 
 class MensSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         //

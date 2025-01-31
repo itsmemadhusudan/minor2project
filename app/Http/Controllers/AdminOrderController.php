@@ -24,15 +24,15 @@ class AdminOrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\View\View
      */
-  
+
      public function show(Order $order)
      {
          $order->load('user'); // Load related user
          $carts = $order->carts; // Access carts accessor
-     
+
          // Debug the data being passed to the view
         //  dd($order, $carts);
-     
+
          return view('admin.orders.show', compact('order', 'carts'));
      }
 
@@ -59,8 +59,14 @@ class AdminOrderController extends Controller
         $request->validate([
             'status' => 'required|in:pending,processing,completed,cancelled',
         ]);
-
-        $order->update(['status' => $request->status]);
+        $payment_status="Unpaid";
+        if($request->status == 'completed'){
+            $payment_status="Paid";
+        }
+        $order->update([
+            'status' => $request->status,
+            'payment_status'=>$payment_status,
+        ]);
 
         return redirect()->route('admin.orders.index')->with('success', 'Order status updated successfully.');
     }
