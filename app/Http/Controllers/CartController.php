@@ -27,7 +27,6 @@ class CartController extends Controller
             'transaction_uuid' => $uuid,
             'product_code' => 'EPAYTEST',
         ];
-        Log::info($data);
         return response()->json($data);
     }
 
@@ -81,7 +80,6 @@ class CartController extends Controller
         $payment_status = 'Unpaid';
         $payment_method = "eSewa";
         $decodedData = json_decode(base64_decode($data['data']), true);
-        Log::info($decodedData);
         $transaction_code = $decodedData['transaction_code'];
         $status = $decodedData['status'];
         $total_amount = $decodedData['total_amount'];
@@ -124,8 +122,7 @@ class CartController extends Controller
             'total_amount' => $payload['total_amount'],
             'transaction_uuid' => $payload['transaction_uuid'],
         ];
-        Log::info($data);
-        $url = 'https://uat.esewa.com.np/api/epay/transaction/status/?' . http_build_query($data);
+        $url = 'https://rc.esewa.com.np/api/epay/transaction/status/?' . http_build_query($data);
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
@@ -139,20 +136,33 @@ class CartController extends Controller
 
         $response = curl_exec($curl);
         curl_close($curl);
-        $res = json_decode($response);
+        // $res = json_decode($response);
+        // $res = $response;
+        $res = json_decode(json_encode($response), true);
 
-        if($res->status == "COMPLETE"){
-            $find_invoice = Order::where("user_id",Auth::id())->where("order_id",$order_id)->first();
-            if($find_invoice){
+        Log::info($res);
+        Log::info(gettype($res));
+        Log::info('Response as object: ' . print_r($res, true));  // Logs the response as a string
+
+
+        if (isset($res['status']) && $res['status'] == "COMPLETE") {
+            // Assuming $order_id and $cart_ids are defined somewhere in your code
+            $find_invoice = Order::where("user_id", Auth::id())->where("order_id", $order_id)->first();
+
+            if ($find_invoice) {
                 $find_invoice->update([
-                    "payment_status"=>"Paid",
+                    "payment_status" => "Paid",
                 ]);
+
                 Cart::whereIn('id', $cart_ids)->update(['status' => 'done']);
             }
+
             return view('payment_success');
-        }else{
+        } else {
+            // If not complete, redirect to payment_failed view
             return view('payment_failed');
         }
+
     }
 
     public function deleteCart($cart_id)

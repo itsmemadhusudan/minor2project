@@ -60,13 +60,13 @@
                             <input type="hidden" id="product_service_charge" name="product_service_charge" value="0" required>
                             <input type="hidden" id="product_delivery_charge" name="product_delivery_charge" value="0" required>
                             <input type="hidden" id="success_url" name="success_url" value="{{ route("cart.verifyEsewa") }}" required>
-                            <input type="hidden" id="failure_url" name="failure_url" value="https://google.com" required>
+                            <input type="hidden" id="failure_url" name="failure_url" value="http://127.0.0.1:8000/" required>
                             <input type="hidden" id="signed_field_names" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required>
                             <input type="hidden" id="signature" name="signature" value="{{ $signature }}" required>
                             <input value="Pay with Esewa" class="btn btn-success payment-btn" type="submit">
                             </form>
-                        
-                        
+
+
                     </div>
                 </div>
             </div>

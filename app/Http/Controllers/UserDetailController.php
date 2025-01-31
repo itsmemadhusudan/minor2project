@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User; // Import the User model
+use App\Models\Order; // Import the User model
 
 class UserDetailController extends Controller
 {
@@ -17,7 +18,20 @@ class UserDetailController extends Controller
         // Fetch all user details from the users table
         $userDetails = User::select('id', 'name', 'email', 'phone')->get();
         $total_user_count = User::count();
-        return view('dashboard.home', ['userDetails' => $userDetails]);
+        $total_order_count = Order::count();
+        $total_revenue_count = Order::where('payment_status', 'Paid')->sum('total_amount');
+        $recent_orders = Order::with('user')->limit(5)->get();
+
+        $data = [
+            'userDetails' => $userDetails,
+            'total_user_count' => $total_user_count,
+            'total_order_count' => $total_order_count,
+            'total_revenue_count' => $total_revenue_count,
+            'recent_orders' => $recent_orders,
+        ];
+
+
+        return view('dashboard.home', ['data' => $data]);
     }
 
     /**

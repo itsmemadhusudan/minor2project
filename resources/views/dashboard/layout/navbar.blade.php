@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light top-navbar">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ route('admin.profile') }}">
+        <a class="navbar-brand" href="{{ route('index') }}">
           <img src="{{ asset('assets/image/logo1.png') }}" alt="Yfasma" class="navbar-logo">
           </a>
           <div class="d-flex align-items-center">

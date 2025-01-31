@@ -25,7 +25,13 @@
                 <tr>
                     <td>{{ $order->id }}</td>
                     <td>{{ $order->order_id }}</td>
-                    <td>{{ $order->user->name }}</td>
+                    <td>
+                        @if($order['user'])
+                            {{ $order['user']->name }}
+                        @else
+                            N/A
+                        @endif
+                    </td>
                     <td>NRP {{ $order->total_amount }}</td>
                     <td>
                         @if($order->status == 'pending')

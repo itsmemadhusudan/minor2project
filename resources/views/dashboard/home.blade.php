@@ -2,12 +2,12 @@
 @section('content')
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">Dashboard</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
+    {{-- <div class="btn-toolbar mb-2 mb-md-0">
       <button type="button" class="btn btn-sm btn-outline-secondary">
         <span data-feather="calendar"></span>
         This week
       </button>
-    </div>
+    </div> --}}
   </div>
 <div class="row">
     <div class="col-md-4 mb-4">
@@ -17,7 +17,7 @@
                   <i class="fas fa-box-open fa-2x me-3 text-primary"></i>
                   <div>
                       <h5 class="card-title mb-0">Total Orders</h5>
-                       <span class="fs-3">120</span>
+                       <span class="fs-3"> {{ $data['total_order_count'] }}</span>
                   </div>
 
               </div>
@@ -33,11 +33,8 @@
                   <i class="fas fa-user-plus fa-2x me-3 text-success"></i>
                   <div>
                       <h5 class="card-title mb-0">Total Customers</h5>
-                      @if (Auth::check() && Auth::user()->role == 'admin')
-                         <h5 class="card-title mb-0">New Customers</h5>
-                      @endif
 
-                      <span class="fs-3">25</span>
+                      <span class="fs-3">{{ $data['total_user_count'] }}</span>
                   </div>
 
               </div>
@@ -53,7 +50,7 @@
                     <i class="fas fa-chart-line fa-2x me-3 text-warning"></i>
                   <div>
                       <h5 class="card-title mb-0">Total Revenue</h5>
-                     <span class="fs-3">$12,000</span>
+                     <span class="fs-3">NRP  {{ $data['total_revenue_count'] }}</span>
                   </div>
 
               </div>
@@ -68,63 +65,46 @@
       <h5 class="mb-0">Recent Orders</h5>
   </div>
   <div class="card-body">
-      {{-- <table class="table table-hover">
-           <thead>
-              <tr>
-                 <th>Order ID</th>
-                 <th>Customer</th>
-                 <th>Date</th>
-                 <th>Amount</th>
-                 <th>Status</th>
-              </tr>
-           </thead>
-           <tbody>
-              <tr>
-                 <td>#1234</td>
-                 <td>John Doe</td>
-                 <td>2023-11-15</td>
-                 <td>$100</td>
-                 <td><span class="badge bg-success">Completed</span></td>
-              </tr>
-               <tr>
-                 <td>#1235</td>
-                 <td>Jane Doe</td>
-                 <td>2023-11-15</td>
-                 <td>$150</td>
-                 <td><span class="badge bg-warning">Pending</span></td>
-              </tr>
-              <tr>
-                 <td>#1236</td>
-                 <td>Peter Pan</td>
-                 <td>2023-11-15</td>
-                 <td>$200</td>
-                 <td><span class="badge bg-danger">Cancelled</span></td>
-              </tr>
-           </tbody>
-      </table> --}}
-      <table class="table table-hover table-bordered">
-        <thead class="thead-dark">
+    <table class="table">
+        <thead>
             <tr>
-                {{-- <th scope="col">ID</th> --}}
-                <th scope="col">Product Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Description</th>
-                <th scope="col">Price</th>
-                <th scope="col">Category</th>
+                <th>ID</th>
+                <th>Order ID</th>
+                <th>User</th>
+                 <th>Total Amount</th>
+                <th>Status</th>
+                <th>Payment Type</th>
             </tr>
         </thead>
-        {{-- <tbody>
-            @foreach($uploads as $upload)
+        <tbody>
+        @foreach($data['recent_orders'] as $order)
             <tr>
-                <td>{{ $upload->designer_name }}</td>
-                <td>{{ $upload->email }}</td>
-                <td>{{ $upload->description }}</td>
-                <td>${{ $upload->price }}</td>
-                <td>{{ $upload->category }}</td>
+                <td>{{ $order['id'] }}</td>
+                <td>{{ $order['order_id'] }}</td>
+                <td>
+                    @if($order['user'])
+                        {{ $order['user']->name }}
+                    @else
+                        N/A
+                    @endif
+                </td>
+                <td>NRP {{ $order['total_amount'] }}</td>
+                <td>
+                    @if($order['status'] == 'pending')
+                        <span class="badge bg-warning">Pending</span>
+                    @elseif($order['status'] == 'processing')
+                        <span class="badge bg-info">Processing</span>
+                    @elseif($order['status'] == 'completed')
+                        <span class="badge bg-success">Completed</span>
+                    @elseif($order['status'] == 'cancelled')
+                        <span class="badge bg-danger">Cancelled</span>
+                    @endif
+                </td>
+                <td>{{ $order->payment_type }}</td>
             </tr>
-            @endforeach
+        @endforeach
         </tbody>
-    </table> --}}
+    </table>
   </div>
 
 </div>
