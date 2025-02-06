@@ -7,14 +7,13 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Upload;
-use App\Models\PaymentSuccessful; // Add this model
+use App\Models\PaymentSuccessful;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class EsewaController extends Controller
 {
-    // Verify payment and process order
     public function verifyPayment(Request $request)
     {
         dd($request);
@@ -24,7 +23,6 @@ class EsewaController extends Controller
         $refId = $request->refId;
 
         if ($status == 'success') {
-            // Payment success
             $userID = session()->get('userData.id');
             $cartItems = Cart::where('user_id', $userID)->get();
 
@@ -33,14 +31,13 @@ class EsewaController extends Controller
             $verifyTransaction = $this->verifyTransaction($request, $sum);
 
             if (strpos($verifyTransaction, 'Success') !== false) {
-                // Verified (process further)
                 $allSufficientQuantity = $this->checkSufficientQuantity($cartItems);
                 if ($allSufficientQuantity) {
                     $orderData = Order::create([
                         'user_id' => $userID,
                         'total_amount' => $sum,
                         'status' => 'Success',
-                        'reference_id' => $oid, // Add reference_id
+                        'reference_id' => $oid,
                     ]);
 
                     foreach ($cartItems as $cart) {
@@ -53,8 +50,6 @@ class EsewaController extends Controller
 
                         Cart::destroy($cart->id);
                     }
-
-                    // Save payment details into the PaymentSuccessful model
                     $this->savePaymentDetails($request, $sum, 'Success');
 
                     $this->sendMail($orderData->id);
@@ -96,8 +91,6 @@ class EsewaController extends Controller
             return false;
         }
     }
-
-    // Verify transaction with eSewa API
     public function verifyTransaction($data, $sum)
     {
         $url = "https://uat.esewa.com.np/epay/transrec";
@@ -116,15 +109,11 @@ class EsewaController extends Controller
         curl_close($curl);
         return $response;
     }
-
-    // Send an invoice email after successful order
     public function sendMail($order_id)
     {
         $orderData = Order::with('orderDetails.product', 'user')->find($order_id);
-        dispatch(new UserJob($orderData));  // Assuming UserJob handles email sending
+        dispatch(new UserJob($orderData));
     }
-
-    // Save payment details into the database
     public function savePaymentDetails(Request $request, $amount, $status)
     {
         PaymentSuccessful::create([
@@ -134,8 +123,6 @@ class EsewaController extends Controller
             'reference_id' => $request->oid,
         ]);
     }
-
-    // Handle the callback response from eSewa
     public function handleCallback(Request $request)
     {
         dd($request);
@@ -143,7 +130,6 @@ class EsewaController extends Controller
         $decodedData = json_decode($response, true);
 
         if ($decodedData['status'] == 'Success') {
-            // Save payment details in the database
             $this->savePaymentDetails($request, $decodedData['amount'], 'Success');
             $this->processOrder($decodedData);
 
@@ -153,8 +139,6 @@ class EsewaController extends Controller
             return response()->json(['message' => 'Payment Failed', 'data' => $decodedData], 400);
         }
     }
-
-    // Process order and update order status to 'Paid'
     public function processOrder($decodedData)
     {
         $order = Order::where('reference_id', $decodedData['reference_id'])->first();
@@ -165,8 +149,6 @@ class EsewaController extends Controller
             $this->updateOrderDetails($order);
         }
     }
-
-    // Update the quantity of products based on the order details
     public function updateOrderDetails($order)
     {
         foreach ($order->orderDetails as $orderDetail) {

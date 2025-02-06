@@ -40,12 +40,9 @@ class DesignerController extends Controller
         if ($category !== 'all' && in_array($category, ['Western', 'Traditional'])) {
             $products->where('category', $category);
         }
-
-        // Get products as array for bubble sort
+//get products using bubble shorts
         $products = $products->get()->toArray();
         $n = count($products);
-
-        // Bubble Sort Implementation
         for ($i = 0; $i < $n - 1; $i++) {
             for ($j = 0; $j < $n - $i - 1; $j++) {
                 $shouldSwap = false;
