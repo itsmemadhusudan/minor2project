@@ -41,8 +41,8 @@
                         <div class="card-body">
                             <h5 class="card-title product-name">{{ $product->name }}</h5>
                             <p class="card-text product-price">${{ $product->price }}</p>
-                            <a href="{{ route('view_product', encrypt($product->id)) }}" class="btn btn-primary add-to-cart-btn">View</a>
-                            
+                            <a href="{{ route('view_product', encrypt($product->id)) }}" class="btn btn-primary add-to-cart-btn" style="background-color: #bce9f4; color: black;">View</a>
+
                         </div>
                     </div>
                 </div>

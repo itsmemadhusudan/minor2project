@@ -69,13 +69,9 @@ class AuthController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-
-            // Redirect based on user role
             if ($user->role === 'admin') {
                 return redirect()->route('admin.profile')->with('success');
             }
-
-            // Redirect to the default page for non-admin users
             return redirect()->route('index')->with('success');
         }
 

@@ -8,6 +8,7 @@
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        color: black;
     }
 
     .sidebar-sticky {
@@ -92,12 +93,12 @@
         <div class="col-md-3 col-lg-2">
             <div class="sidebar sidebar-sticky">
                 <h2 class="section-title">Filters</h2>
-                
+
                 <!-- Price Range Filter -->
                 <div class="filter-section">
                     <h3 class="section-title">Price Range</h3>
-                    <a href="{{ route('designer', ['price_range' => 'under1000', 'sort' => $currentSort, 'category' => $currentCategory]) }}" 
-                       class="filter-option {{ $currentPriceRange === 'under1000' ? 'active' : '' }}">
+                    <a href="{{ route('designer', ['price_range' => 'under1000', 'sort' => $currentSort, 'category' => $currentCategory]) }}"
+                       class="filter-option {{ $currentPriceRange === 'under1000' ? 'active' : '' }}" >
                         Under NPR 1000
                     </a><br>
                     <a href="{{ route('designer', ['price_range' => 'under2000', 'sort' => $currentSort, 'category' => $currentCategory]) }}"
@@ -132,7 +133,7 @@
                     <h3 class="section-title">Sort By</h3>
                     <a href="{{ route('designer', ['sort' => 'name', 'direction' => $currentSort === 'name' && $currentDirection === 'asc' ? 'desc' : 'asc', 'category' => $currentCategory, 'price_range' => $currentPriceRange]) }}"
                        class="filter-option {{ $currentSort === 'name' ? 'active' : '' }}">
-                        Name 
+                        Name
                         @if($currentSort === 'name')
                             <i class="fas fa-arrow-{{ $currentDirection === 'asc' ? 'up' : 'down' }} float-end"></i>
                         @endif
@@ -169,8 +170,8 @@
                         <div class="card-body">
                             <h5 class="card-title product-name">{{ $product['name'] }}</h5>
                             <p class="card-text product-price">${{ $product['price'] }}</p>
-                            <a href="{{ route('view_product', encrypt($product['id'])) }}" class="btn btn-primary add-to-cart-btn">View</a>
-                            
+                            <a href="{{ route('view_product', encrypt($product['id'])) }}" class="btn btn-primary add-to-cart-btn" style="background-color:#bce9f4;color:black;">View</a>
+
                         </div>
                     </div>
                 </div>

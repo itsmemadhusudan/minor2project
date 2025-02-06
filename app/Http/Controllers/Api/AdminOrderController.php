@@ -32,8 +32,8 @@ class AdminOrderController extends Controller
      */
     public function show(Order $order): JsonResponse
     {
-          $order->load('user'); // Load related user
-          $carts = $order->carts; // Access carts accessor
+          $order->load('user'); 
+          $carts = $order->carts;
 
            return response()->json([
             'success' => true,

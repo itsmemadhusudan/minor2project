@@ -114,55 +114,66 @@ class CartController extends Controller
         return $response = $this->verifyEsewaPayment($payload,$cart_ids,$order_id);
 
     }
-    public function verifyEsewaPayment($payload,$cart_ids,$order_id){
-        $curl = curl_init();
-        $data = [
-            'product_code' =>  $payload['product_code'],
-            'transaction_code' => $payload['transaction_code'],
-            'total_amount' => $payload['total_amount'],
-            'transaction_uuid' => $payload['transaction_uuid'],
-        ];
-        $url = 'https://rc.esewa.com.np/api/epay/transaction/status/?' . http_build_query($data);
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-        ));
+    public function verifyEsewaPayment($payload, $cart_ids, $order_id)
+    {
+        try {
+            $curl = curl_init();
+            $data = [
+                'product_code' => $payload['product_code'],
+                'transaction_code' => $payload['transaction_code'],
+                'total_amount' => $payload['total_amount'],
+                'transaction_uuid' => $payload['transaction_uuid'],
+            ];
 
-        $response = curl_exec($curl);
-        curl_close($curl);
-        // $res = json_decode($response);
-        // $res = $response;
-        $res = json_decode(json_encode($response), true);
+            $url = 'https://rc.esewa.com.np/api/epay/transaction/status/?' . http_build_query($data);
 
-        Log::info($res);
-        Log::info(gettype($res));
-        Log::info('Response as object: ' . print_r($res, true));  // Logs the response as a string
+            curl_setopt_array($curl, [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+            ]);
 
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+            curl_close($curl);
 
-        if (isset($res['status']) && $res['status'] == "COMPLETE") {
-            // Assuming $order_id and $cart_ids are defined somewhere in your code
-            $find_invoice = Order::where("user_id", Auth::id())->where("order_id", $order_id)->first();
-
-            if ($find_invoice) {
-                $find_invoice->update([
-                    "payment_status" => "Paid",
-                ]);
-
-                Cart::whereIn('id', $cart_ids)->update(['status' => 'done']);
+            if ($err) {
+                Log::error('eSewa API Error: ' . $err);
+                return view('payment_failed');
             }
 
-            return view('payment_success');
-        } else {
-            // If not complete, redirect to payment_failed view
+            $res = json_decode($response);
+            Log::info('eSewa Response: ' . $response);
+
+            if (!$res || !isset($res->status)) {
+                Log::error('Invalid eSewa Response: ' . $response);
+                return view('payment_failed');
+            }
+
+            if ($res->status == "COMPLETE") {
+                $find_invoice = Order::where("user_id", Auth::id())
+                                    ->where("order_id", $order_id)
+                                    ->first();
+
+                if ($find_invoice) {
+                    $find_invoice->update([
+                        "payment_status" => "Paid",
+                    ]);
+                    Cart::whereIn('id', $cart_ids)->update(['status' => 'done']);
+                }
+                return view('payment_success');
+            }
+
+            return view('payment_failed');
+        } catch (\Exception $e) {
+            Log::error('eSewa Payment Verification Error: ' . $e->getMessage());
             return view('payment_failed');
         }
-
     }
 
     public function deleteCart($cart_id)

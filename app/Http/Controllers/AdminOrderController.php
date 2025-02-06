@@ -29,8 +29,6 @@ class AdminOrderController extends Controller
      {
          $order->load('user'); // Load related user
          $carts = $order->carts; // Access carts accessor
-
-         // Debug the data being passed to the view
         //  dd($order, $carts);
 
          return view('admin.orders.show', compact('order', 'carts'));
