@@ -63,9 +63,7 @@ class CustomerController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
         ];
-
-        // Only update the password if it is provided
-        if ($request->filled('password')) {
+        if ($request->filled('password')) { //if needed for password confirmation or changes
             $userData['password'] = Hash::make($request->password);
         }
 

@@ -104,7 +104,6 @@ class DesignerAdminController extends Controller
             'role' => $request->role,
         ];
 
-        // Only update the password if it is provided
         if ($request->filled('password')) {
             $userData['password'] = Hash::make($request->password);
         }

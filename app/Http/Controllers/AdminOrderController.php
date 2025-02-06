@@ -27,8 +27,8 @@ class AdminOrderController extends Controller
 
      public function show(Order $order)
      {
-         $order->load('user'); // Load related user
-         $carts = $order->carts; // Access carts accessor
+         $order->load('user');
+         $carts = $order->carts;
         //  dd($order, $carts);
 
          return view('admin.orders.show', compact('order', 'carts'));

@@ -53,7 +53,6 @@ class CartController extends Controller
             return $cartItem->product->price * $cartItem->quantity;
         });
         $message = "total_amount={$totalPrice},transaction_uuid={$orderID},product_code=EPAYTEST";
-        // Use your actual secret key here
         $secret = "8gBm/:&EnhH.1/q";
         $s = hash_hmac("sha256", $message, $secret, true);
 
@@ -83,8 +82,8 @@ class CartController extends Controller
         $transaction_code = $decodedData['transaction_code'];
         $status = $decodedData['status'];
         $total_amount = $decodedData['total_amount'];
-        $transaction_uuid = $decodedData['transaction_uuid']; // change name
-        $order_id = $decodedData['transaction_uuid']; // change name
+        $transaction_uuid = $decodedData['transaction_uuid'];
+        $order_id = $decodedData['transaction_uuid'];
         $product_code = $decodedData['product_code'];
         $signed_field_names = $decodedData['signed_field_names'];
         $signature = $decodedData['signature'];
