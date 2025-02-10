@@ -12,9 +12,9 @@
             @endif
             <div class="card-body">
                 <h5 class="card-title product-name">{{ $product->name }}</h5>
-                <p class="card-text product-price">${{ $product->price }}</p>
+                <p class="card-text product-price"> NRP {{ $product->price }}</p>
                 <a href="{{ route('view_product', encrypt($product->id)) }}" class="btn btn-primary add-to-cart-btn">View</a>
-                
+
             </div>
         </div>
     </div>

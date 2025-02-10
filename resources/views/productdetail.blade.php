@@ -3,7 +3,7 @@
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="row bg-light shadow rounded p-4" style="width: 100%;">
         <div class="col-md-6 image-container">
-            
+
             @if($product->image)
                     <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="card-img-top product-image">
                 @else
@@ -47,7 +47,7 @@
 </div>
 <div class="container">
     <h2 class="text-center mt-5">Related Products</h2>
-    
+
     <div class="row">
         @foreach ($relatedProducts as $product)
             <div class="col-md-4 mb-4">
@@ -59,9 +59,9 @@
                     @endif
                     <div class="card-body">
                         <h5 class="card-title product-name">{{ $product->name }}</h5>
-                        <p class="card-text product-price">${{ $product->price }}</p>
+                        <p class="card-text product-price">NRP {{ $product->price }}</p>
                         <a href="{{ route('view_product', encrypt($product->id)) }}" class="btn btn-primary add-to-cart-btn">View</a>
-                        
+
                     </div>
                 </div>
             </div>
@@ -77,20 +77,20 @@
 <style>
     .navbar {
         background-color: #b5c99a;
-        font-family: 'Montserrat', sans-serif;
+        /* font-family: 'Montserrat', sans-serif; */
         font-size: 16px;
-        font-weight: bold;
+        /* font-weight: bold; */
     }
     .nav-item {
         margin-left: 30px;
     }
     .btn-outline-secondary {
-        background-color: #b5c99a;
+        /* background-color: #b5c99a; */
         color: black;
     }
     .navbar-brand {
-        font-family: 'Montserrat', sans-serif;
-        font-weight: bold;
+        /* font-family: 'Montserrat', sans-serif; */
+        /* font-weight: bold; */
     }
     .gradient-custom-2 {
         background: #fccb90;

@@ -92,66 +92,66 @@
         <!-- Left Sidebar -->
         <div class="col-md-3 col-lg-2">
             <div class="sidebar sidebar-sticky">
-                <h2 class="section-title">Filters</h2>
+                <h2 class="section-title" style="color: #ec8c16;">Filters</h2><hr>
 
                 <!-- Price Range Filter -->
                 <div class="filter-section">
-                    <h3 class="section-title">Price Range</h3>
+                    <h3 class="section-title">Price Range</h3><hr>
                     <a href="{{ route('designer', ['price_range' => 'under1000', 'sort' => $currentSort, 'category' => $currentCategory]) }}"
-                       class="filter-option {{ $currentPriceRange === 'under1000' ? 'active' : '' }}" >
+                       class="filter-option {{ $currentPriceRange === 'under1000' ? 'active' : '' }}"style="color: #212529;" >
                         Under NPR 1000
-                    </a><br>
+                    </a><br> <hr>
                     <a href="{{ route('designer', ['price_range' => 'under2000', 'sort' => $currentSort, 'category' => $currentCategory]) }}"
-                       class="filter-option {{ $currentPriceRange === 'under2000' ? 'active' : '' }}">
+                       class="filter-option {{ $currentPriceRange === 'under2000' ? 'active' : '' }}"style="color: #212529">
                         NPR 1000 - NPR 2000
-                    </a><br>
+                    </a><br><hr>
                     <a href="{{ route('designer', ['price_range' => 'above2000', 'sort' => $currentSort, 'category' => $currentCategory]) }}"
-                       class="filter-option {{ $currentPriceRange === 'above2000' ? 'active' : '' }}">
+                       class="filter-option {{ $currentPriceRange === 'above2000' ? 'active' : '' }}"style="color: #212529">
                         Above NPR 2000
-                    </a>
+                    </a><hr>
                 </div>
 
                 <!-- Category Filter -->
                 <div class="filter-section">
-                    <h3 class="section-title">Categories</h3>
+                    <h3 class="section-title">Categories</h3><hr>
                     <a href="{{ route('designer', ['category' => 'all', 'sort' => $currentSort, 'price_range' => $currentPriceRange]) }}"
-                       class="filter-option {{ $currentCategory === 'all' ? 'active' : '' }}">
+                       class="filter-option {{ $currentCategory === 'all' ? 'active' : '' }}"style="color: #212529">
                         All Categories
-                    </a><br>
+                    </a><br><hr>
                     <a href="{{ route('designer', ['category' => 'Western', 'sort' => $currentSort, 'price_range' => $currentPriceRange]) }}"
-                       class="filter-option {{ $currentCategory === 'Western' ? 'active' : '' }}">
+                       class="filter-option {{ $currentCategory === 'Western' ? 'active' : '' }}"style="color: #212529">
                         Western
-                    </a><br>
+                    </a><br><hr>
                     <a href="{{ route('designer', ['category' => 'Traditional', 'sort' => $currentSort, 'price_range' => $currentPriceRange]) }}"
-                       class="filter-option {{ $currentCategory === 'Traditional' ? 'active' : '' }}">
+                       class="filter-option {{ $currentCategory === 'Traditional' ? 'active' : '' }}"style="color: #212529">
                         Traditional
-                    </a>
+                    </a><hr>
                 </div>
 
                 <!-- Sort Options -->
                 <div class="filter-section">
-                    <h3 class="section-title">Sort By</h3>
+                    <h3 class="section-title">Sort By</h3><hr>
                     <a href="{{ route('designer', ['sort' => 'name', 'direction' => $currentSort === 'name' && $currentDirection === 'asc' ? 'desc' : 'asc', 'category' => $currentCategory, 'price_range' => $currentPriceRange]) }}"
-                       class="filter-option {{ $currentSort === 'name' ? 'active' : '' }}">
+                       class="filter-option {{ $currentSort === 'name' ? 'active' : '' }}" style="color: #212529">
                         Name
                         @if($currentSort === 'name')
                             <i class="fas fa-arrow-{{ $currentDirection === 'asc' ? 'up' : 'down' }} float-end"></i>
                         @endif
-                    </a><br>
+                    </a><br><hr>
                     <a href="{{ route('designer', ['sort' => 'price', 'direction' => $currentSort === 'price' && $currentDirection === 'asc' ? 'desc' : 'asc', 'category' => $currentCategory, 'price_range' => $currentPriceRange]) }}"
-                       class="filter-option {{ $currentSort === 'price' ? 'active' : '' }}">
+                       class="filter-option {{ $currentSort === 'price' ? 'active' : '' }}"style="color: #212529">
                         Price
                         @if($currentSort === 'price')
                             <i class="fas fa-arrow-{{ $currentDirection === 'asc' ? 'up' : 'down' }} float-end"></i>
                         @endif
-                    </a><br>
+                    </a><br><hr>
                     <a href="{{ route('designer', ['sort' => 'category', 'direction' => $currentSort === 'category' && $currentDirection === 'asc' ? 'desc' : 'asc', 'category' => $currentCategory, 'price_range' => $currentPriceRange]) }}"
-                       class="filter-option {{ $currentSort === 'category' ? 'active' : '' }}">
+                       class="filter-option {{ $currentSort === 'category' ? 'active' : '' }}"style="color: #212529">
                         Category
                         @if($currentSort === 'category')
                             <i class="fas fa-arrow-{{ $currentDirection === 'asc' ? 'up' : 'down' }} float-end"></i>
                         @endif
-                    </a>
+                    </a><hr>
                 </div>
             </div>
         </div>
@@ -169,8 +169,7 @@
                         @endif
                         <div class="card-body">
                             <h5 class="card-title product-name">{{ $product['name'] }}</h5>
-                            <p class="card-text product-price">${{ $product['price'] }}</p>
-                            <a href="{{ route('view_product', encrypt($product['id'])) }}" class="btn btn-primary add-to-cart-btn" style="background-color:#bce9f4;color:black;">View</a>
+                            <p class="card-text product-price">NRP {{ $product['price'] }}</p><a href="{{ route('view_product', encrypt($product['id'])) }}" class="btn btn-primary add-to-cart-btn">View</a>
 
                         </div>
                     </div>

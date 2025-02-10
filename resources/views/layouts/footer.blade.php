@@ -1,4 +1,4 @@
-<div class="footer">
+<div class="footer" style="margin-bottom:0%">
     <footer>
         <div class="footer-social">
             <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
